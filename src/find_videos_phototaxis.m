@@ -16,6 +16,7 @@ outputtable=readtable(genotypelist,'readvariablenames',false);
 
 startdir=pwd;
 PImeans=[];
+PI=[];
 
 
 
@@ -41,6 +42,7 @@ PImeans=[];
                     disp(outputtable.Var2(q));
                     disp(PImean(outputtable.Var2(q)));
                     PImeans(end+1) = PImean(outputtable.Var2(q));
+                    PI=vertcat(PI,transpose(PIs{outputtable.Var2(q)}));
                 end
                 cd(startdir);
             end
@@ -52,14 +54,20 @@ PImeans=[];
 
 
 meandata=mean(PImeans);
+disp(size(PImeans,2));
 dataSEM=std(PImeans)/sqrt(size(PImeans,2));
-fullfigname=strcat(genotype,'_PImeans');
+meansingles=mean(PI);
+singlesSEM=std(PI)/sqrt(size(PI,1));
+disp(size(PI,1));
+fullfigname=strcat(genotype,'_PImeans_PI');
 datafilename=strcat(fullfigname,'.mat');
 fignew=figure('Name',fullfigname);
 
-bar(1,meandata,0.1,'m');
+bar([1 2],[meandata meansingles],0.1,'m');
 hold on;
-errorbar(1,meandata,dataSEM, 'r');
+er=errorbar([1 2],[meandata meansingles],[dataSEM singlesSEM], [dataSEM singlesSEM]);
+er.Color = [0 0 0];                            
+er.LineStyle = 'none';
 hold off;
 saveas(fignew,fullfigname,'epsc');
 save(datafilename,'PImeans');
