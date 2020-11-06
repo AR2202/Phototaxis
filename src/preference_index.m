@@ -6,7 +6,7 @@
 %reads in data from a file called 'inputdir-trk.mat' located in
 %inputdir/inputdir
 
-function PIs=preference_index(inputdir)
+function [PIs,PImean]=preference_index(inputdir)
 startdir=pwd;
 centroids=find_chambers(inputdir);
 cd (inputdir);
@@ -15,6 +15,7 @@ trkfile=strcat(inputdir,'-track.mat');
 
 load(trkfile);
 chambernum = zeros(6,1);
+PImean = zeros(6,1);
 PIs={};
 for i=1:6
     
@@ -33,8 +34,9 @@ for i=1:6
         PI(j)=(framesleft-framesright)/numframes;
     end
     PIs{i}=PI;
+    PImean(i) = mean(PIs{i});
         
 end
-save(strcat(inputdir,'-preference_index.mat'),'PIs');
+save(strcat(inputdir,'-preference_index.mat'),'PIs','PImean');
 cd (startdir);
 
