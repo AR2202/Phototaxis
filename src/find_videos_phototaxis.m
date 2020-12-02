@@ -8,15 +8,15 @@
 %both arguments are of type string
 function find_videos_phototaxis(genotypelist,genotype)
 
-%path = 'distance_travelled';
-%structname = 'data';
-%expname = 'dist';
+
 outputtable=readtable(genotypelist,'readvariablenames',false);
 
 
 startdir=pwd;
 PImeans=[];
 PI=[];
+PIsingles={};
+cellPImeans={};
 
 
 
@@ -36,13 +36,14 @@ PI=[];
                
                 datafilename=strcat(videonames{q}{1},'-preference_index.mat');
                 
-                    disp(datafilename);
+                    
                     
                     load(datafilename);
-                    disp(outputtable.Var2(q));
-                    disp(PImean(outputtable.Var2(q)));
+                    
                     PImeans(end+1) = PImean(outputtable.Var2(q));
+                    cellPImeans{end+1}=PImean(outputtable.Var2(q));
                     PI=vertcat(PI,transpose(PIs{outputtable.Var2(q)}));
+                    PIsingles{end+1}=PIs{outputtable.Var2(q)};
                 end
                 cd(startdir);
             end
@@ -54,11 +55,11 @@ PI=[];
 
 
 meandata=mean(PImeans);
-disp(size(PImeans,2));
+
 dataSEM=std(PImeans)/sqrt(size(PImeans,2));
 meansingles=mean(PI);
 singlesSEM=std(PI)/sqrt(size(PI,1));
-disp(size(PI,1));
+
 fullfigname=strcat(genotype,'_PImeans_PI');
 datafilename=strcat(fullfigname,'.mat');
 fignew=figure('Name',fullfigname);
@@ -70,5 +71,5 @@ er.Color = [0 0 0];
 er.LineStyle = 'none';
 hold off;
 saveas(fignew,fullfigname,'epsc');
-save(datafilename,'PImeans');
+save(datafilename,'PImeans','PI','PIsingles','cellPImeans');
 

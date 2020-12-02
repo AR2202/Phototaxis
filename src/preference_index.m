@@ -21,15 +21,16 @@ endframe = round(framerate*dur);
 
 load(trkfile);
 totalframes = size(trk.data,2);
-disp(totalframes);
-disp(endframe);
+numchambers = size(trk.flies_in_chamber,2);
+%disp(totalframes);
+%disp(endframe);
 if endframe>totalframes
     endframe = totalframes;
 end
 chambernum = zeros(6,1);
 PImean = zeros(6,1);
 PIs={};
-for i=1:6
+for i=1:numchambers
     
     chambernum(i)=centroids(i,3);
     xcentroid=centroids(i,1);
